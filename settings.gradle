@@ -1,0 +1,2 @@
+rootProject.name = "Excell_Api_App"
+include ':app'

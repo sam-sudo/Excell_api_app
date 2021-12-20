@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<group android:checkableBehavior="single" android:id="@+id/database">
+    <item android:title="Database:" android:id="@+id/mnugrp_Index">
+        <menu>
+
+            <!--This line below is dump line for rendering dynamic sub-menu item-->
+            //<item  android:title="------ Conect with database ------" />
+
+        </menu>
+    </item>
+</group>
+
+<group android:id="@+id/table" android:orderInCategory="999" android:checkableBehavior="single">
+    <item android:title="Table:" android:id="@+id/mnugrp_Attachment">
+        <menu>
+
+            <!--This line below is dump line for rendering dynamic sub-menu item-->
+            <item  android:title="------ Conect with database ------" />
+
+        </menu>
+    </item>
+</group>
+</menu>
+
