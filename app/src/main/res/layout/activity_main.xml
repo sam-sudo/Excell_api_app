@@ -1,36 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <!--the root view must be the DrawerLayout-->
-<androidx.drawerlayout.widget.DrawerLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/my_drawer_layout"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".MainActivity"
-tools:ignore="HardcodedText">
-
 <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <ListView
+    <TextView
+        android:text="Select one option to connect with your database"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:id="@+id/dataList"/>
+        android:gravity="center_horizontal">
+
+    </TextView>
+
+    <Button
+        android:text="Excel (Google Sheets)"
+        android:id="@+id/btn_excell"
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </Button>
 
 </LinearLayout>
-
-<!--this the navigation view which draws
-    and shows the navigation drawer-->
-<!--include the menu created in the menu folder-->
-<com.google.android.material.navigation.NavigationView
-    android:id="@+id/navigationView"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:layout_gravity="start"
-    app:menu="@menu/drawer_menu" />
-
-</androidx.drawerlayout.widget.DrawerLayout>
