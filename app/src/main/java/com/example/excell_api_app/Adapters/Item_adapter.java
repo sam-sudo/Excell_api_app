@@ -1,6 +1,7 @@
 package com.example.excell_api_app.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import com.example.excell_api_app.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Item_adapter extends BaseAdapter {
 
@@ -46,7 +49,7 @@ public class Item_adapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        HashMap<String,String> item = (HashMap) getItem(position);
+        LinkedHashMap<String,String> item = (LinkedHashMap ) getItem(position);
 
         convertView = LayoutInflater.from(context).inflate(R.layout.info_item, null);
 
@@ -55,13 +58,22 @@ public class Item_adapter extends BaseAdapter {
         linearLayout.setOrientation(linearLayout.VERTICAL);
 
 
+        Log.d("data---","mdg: " + item);
+
+
 
         for (String key: item.keySet()) {
-            //Log.d("data---","mdg: " + key);
+            Log.d("data---","mdg: " + key);
             TextView textView_temp = new TextView(context);
-            textView_temp.setText(item.get(key));
+            TextView textView_temp2 = new TextView(context);
+            textView_temp.setText(key+": ");
+            textView_temp2.setText(item.get(key));
             textView_temp.setTextSize(20);
+            textView_temp2.setTextSize(20);
+            textView_temp.setTextColor(Color.BLACK);
+            textView_temp2.setPadding(20,0,0,0);
             linearLayout.addView(textView_temp);
+            linearLayout.addView(textView_temp2);
         }
 
 

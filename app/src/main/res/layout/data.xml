@@ -20,6 +20,10 @@
         <LinearLayout
             android:layout_gravity="center"
             android:gravity="center"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/border"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -31,8 +35,8 @@
             </androidx.appcompat.widget.SearchView>
 
             <TextView
-                android:text="items"
-                android:layout_weight="3"
+                android:text="items: 0"
+                android:layout_weight="2"
                 android:id="@+id/n_items"
                 android:textSize="20dp"
                 android:layout_width="match_parent"
@@ -44,17 +48,25 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/black">
-        </View>
+
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="10dp"
             android:layout_margin="10dp"
             android:id="@+id/dataList"/>
+
+        <TextView
+            android:id="@+id/empty"
+            android:text="Chose one sheet on menu"
+            android:gravity="center"
+            android:textSize="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </TextView>
 
     </LinearLayout>
 

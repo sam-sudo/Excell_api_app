@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,20 +34,28 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Data extends AppCompatActivity {
 
     private Item_adapter item_adapter;
+    private static final int MAX_INFO_DETAIL = 3;
     ListView dataList;
+    TextView emptyDataList;
+    TextView n_items;
+
     String url = "https://script.google.com/macros/s/AKfycbxC793kDeQEODSimADvdpXvx4Rpvd8AyQzxSsn8AGXhAjdsVCCEFgDWsyPeWCNRHHU/exec";
     String url2 = "https://script.google.com/macros/s/AKfycbzlCSBaW09IhIMSSvWkMamVXGguCODYgGu0Y0TY3G6JTfRHbv1aOnBjcZR6CI3KEY9C/exec";
+
     ProgressDialog dialog;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ActionBarDrawerToggle actionBarDrawerToggle;
-    TextView n_items;
+
 
     String json;
 
@@ -57,6 +66,7 @@ public class Data extends AppCompatActivity {
 
 
         dataList = (ListView)findViewById(R.id.dataList);
+        emptyDataList = findViewById(R.id.empty);
         n_items = findViewById(R.id.n_items);
 
         //----------Create drawer----------
@@ -75,9 +85,9 @@ public class Data extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                //Log.d("TAG", "onNavigationItemSelected: " + item.getTitle());
 
                 parseJsonData(json,item.getTitle().toString());
+                item_adapter.notifyDataSetChanged();
                 drawerLayout.closeDrawer(GravityCompat.START);
 
                 return false;
@@ -101,8 +111,9 @@ public class Data extends AppCompatActivity {
             public void onResponse(String string) {
                 Log.d("TAG", "onResponse: " + string);
 
-                String sheet = makeMenu(string);
-                parseJsonData(string,sheet);
+                makeMenu(string);
+                /*String sheet = makeMenu(string);
+                parseJsonData(string,sheet);*/
 
                 json = string;
             }
@@ -160,13 +171,7 @@ public class Data extends AppCompatActivity {
 
             }
 
-            //USE THIS IN FRAGMENT TO SHEETS CHANGES
-            JSONArray objectArray = sheets_object.getJSONArray(sheets.get(0));
 
-//            JSONObject data;
-//            ArrayList<Object> data_list = new ArrayList();
-//
-//            n_items.setText(objectArray.length() + "");
 
             navigationView.getMenu().getItem(0).getSubMenu().clear();
             navigationView.getMenu().getItem(1).getSubMenu().clear();
@@ -225,27 +230,38 @@ public class Data extends AppCompatActivity {
             ArrayList<Object> data_list = new ArrayList();
 
             n_items.setText("Datos: " + objectArray.length());
-//
-//            navigationView.getMenu().getItem(0).getSubMenu().clear();
-//            navigationView.getMenu().getItem(1).getSubMenu().clear();
-//            addMenuTitle(0,database);
-//
-//            for(int i = 0; i < sheets.size(); i++){
-//                addMenuTitle(1,sheets.get(i));
-//            }
+
 
             for(int i = 0; i < objectArray.length(); ++i) {
 
+                LinkedHashMap<String,String> item_temp = new LinkedHashMap <>();
+                int count = 0;
                 data = objectArray.getJSONObject(i);
 
-                HashMap<String,Object> item_temp = new HashMap<>();
 
-                item_temp.put("NOMBRE",data.getString("NOMBRE"));
-                item_temp.put("CIF",data.getString("CIF"));
 
+                for (Iterator key = data.keys(); key.hasNext();){
+
+                    if (count < MAX_INFO_DETAIL && count <= data.length()){
+
+                        String temp_value = key.next().toString();
+                        item_temp.put(temp_value,data.getString(temp_value));
+                        item_temp.put(temp_value,data.getString(temp_value));
+
+                        count++;
+                    }else {
+                        break;
+                    }
+                }
                 data_list.add(item_temp);
 
             }
+
+            if(data_list != null && data_list.size() > 0){
+                emptyDataList.setVisibility(View.INVISIBLE);
+            }
+
+
             item_adapter = new Item_adapter(this, data_list);
             dataList.setAdapter(item_adapter);
 
@@ -262,6 +278,7 @@ public class Data extends AppCompatActivity {
 
 
     }
+
 
     void addMenuTitle(int menu, String title){
         navigationView.getMenu().getItem(menu).getSubMenu().add(title);
