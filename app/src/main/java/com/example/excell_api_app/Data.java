@@ -161,6 +161,7 @@ public class Data extends AppCompatActivity {
             }
 
             sheets_object = object.getJSONObject(database);
+            sheets_object = object.getJSONObject(database);
 
             //To get all sheets
             for (Iterator key = sheets_object.keys(); key.hasNext(); ) {
