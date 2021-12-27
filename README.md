@@ -13,7 +13,7 @@ App with Android where you can consult to a web excel.
 * Tambien debemos activar dentro de esta sección el servicio de Google Sheets API para poder conectar excel con este script.
 
 
-<img src="readme/service.png" alt="Script setvice service" width="300px" >
+<img src="readme/service.PNG" alt="Script setvice service" width="300px" >
 
 
 
@@ -59,7 +59,7 @@ function makeObject(multiArr) {
 * Una vez tengamos el código creado debemos implementarlo añadiendo un nombre a la implementación y dando permisos a todo el mundo.
 
 
-<img src="readme/service2.png" alt="Script setvice service" width="400px" >
+<img src="readme/service2.PNG" alt="Script setvice service" width="400px" >
 
 ## Android App
 
