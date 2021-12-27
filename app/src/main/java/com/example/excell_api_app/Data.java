@@ -4,6 +4,7 @@ package com.example.excell_api_app;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
@@ -17,8 +18,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -41,6 +44,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Data extends AppCompatActivity {
 
@@ -59,7 +65,7 @@ public class Data extends AppCompatActivity {
     NavigationView navigationView;
     ActionBarDrawerToggle actionBarDrawerToggle;
     SwipeRefreshLayout refreshLayout;
-
+    SearchView searchView;
 
     String json;
 
@@ -73,14 +79,34 @@ public class Data extends AppCompatActivity {
         emptyDataList = findViewById(R.id.empty);
         n_items = findViewById(R.id.n_items);
         refreshLayout = findViewById(R.id.refreshLayout);
+        searchView = findViewById(R.id.search);
 
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 refreshLayout.setRefreshing(false);
-                getResponse();
 
+                if(sheet != null){
+                    getResponse();
+                }
+
+            }
+        });
+
+        searchView.setIconifiedByDefault(false);
+        //searchView.getQuery();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                parseJsonData(json,sheet,newText.toLowerCase());
+                return false;
             }
         });
 
@@ -211,7 +237,7 @@ public class Data extends AppCompatActivity {
         return sheets.get(0);
     }
 
-    private void parseJsonData(String jsonString,String sheet) {
+    private void parseJsonData(String jsonString,String sheet, String... word) {
 
         Log.d("TAG", "parseJsonData: paaaaarse ");
 
@@ -260,22 +286,24 @@ public class Data extends AppCompatActivity {
                 int count = 0;
                 data = objectArray.getJSONObject(i);
 
-
-
+                //here get all datas and add into object
                 for (Iterator key = data.keys(); key.hasNext();){
 
-                    if (count < MAX_INFO_DETAIL && count <= data.length()){
+                    String temp_value = key.next().toString();
+                    item_temp.put(temp_value,data.getString(temp_value));
 
-                        String temp_value = key.next().toString();
-                        item_temp.put(temp_value,data.getString(temp_value));
-                        item_temp.put(temp_value,data.getString(temp_value));
+                }
 
-                        count++;
-                    }else {
-                        break;
+
+                if(searchView.getQuery() == null || searchView.getQuery().length() <= 0){
+                    data_list.add(item_temp);
+                }else {
+                    boolean isInlist = seachItem(item_temp, String.valueOf(searchView.getQuery()));
+
+                    if(isInlist){
+                        data_list.add(item_temp);
                     }
                 }
-                data_list.add(item_temp);
 
             }
 
@@ -283,24 +311,29 @@ public class Data extends AppCompatActivity {
                 emptyDataList.setVisibility(View.INVISIBLE);
             }
 
-
             item_adapter = new Item_adapter(this, data_list);
             dataList.setAdapter(item_adapter);
-
-
-
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-
-
         dialog.dismiss();
-
 
     }
 
+    Boolean seachItem(LinkedHashMap<String, String> item, String word){
+        Log.d("TAG", "seachItem:  mmmmmm " + item);
+
+
+        for (String key : item.values()){
+            if(key.toLowerCase().startsWith(word.toLowerCase())){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     void addMenuTitle(int menu, String title){
         navigationView.getMenu().getItem(menu).getSubMenu().add(title);

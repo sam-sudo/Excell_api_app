@@ -30,6 +30,8 @@ public class Item_adapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<Object> list;
+    final int MAX_INFO_DETAIL = 3;
+
 
     public Item_adapter(Context context, ArrayList<Object> list) {
         this.context = context;
@@ -95,9 +97,15 @@ public class Item_adapter extends BaseAdapter {
 
 
         int img_count = 0;
+        int count = 0;
 
         for (String key: item.keySet()) {
 
+            //Here filter by nº of elements we want to see
+            if(count >= MAX_INFO_DETAIL){
+                break;
+            }
+            
             TextView textView_temp2 = new TextView(context);
             ImageView img_temp = new ImageView(context);
             LinearLayout linearLayout_internal_1_1 = new LinearLayout(context);
@@ -164,6 +172,7 @@ public class Item_adapter extends BaseAdapter {
             linearLayout_internal_1.addView(linearLayout_internal_1_1);
 
             img_count++;
+            count++;
         }
 
 
