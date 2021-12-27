@@ -3,6 +3,7 @@ package com.example.excell_api_app;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
@@ -20,6 +21,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -47,6 +49,7 @@ public class Data extends AppCompatActivity {
     ListView dataList;
     TextView emptyDataList;
     TextView n_items;
+    String sheet;
 
     String url = "https://script.google.com/macros/s/AKfycbxC793kDeQEODSimADvdpXvx4Rpvd8AyQzxSsn8AGXhAjdsVCCEFgDWsyPeWCNRHHU/exec";
     String url2 = "https://script.google.com/macros/s/AKfycbzlCSBaW09IhIMSSvWkMamVXGguCODYgGu0Y0TY3G6JTfRHbv1aOnBjcZR6CI3KEY9C/exec";
@@ -55,6 +58,7 @@ public class Data extends AppCompatActivity {
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ActionBarDrawerToggle actionBarDrawerToggle;
+    SwipeRefreshLayout refreshLayout;
 
 
     String json;
@@ -68,6 +72,17 @@ public class Data extends AppCompatActivity {
         dataList = (ListView)findViewById(R.id.dataList);
         emptyDataList = findViewById(R.id.empty);
         n_items = findViewById(R.id.n_items);
+        refreshLayout = findViewById(R.id.refreshLayout);
+
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshLayout.setRefreshing(false);
+                getResponse();
+
+            }
+        });
 
         //----------Create drawer----------
 
@@ -86,8 +101,9 @@ public class Data extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+                sheet = item.getTitle().toString();
                 parseJsonData(json,item.getTitle().toString());
-                item_adapter.notifyDataSetChanged();
+
                 drawerLayout.closeDrawer(GravityCompat.START);
 
                 return false;
@@ -101,7 +117,8 @@ public class Data extends AppCompatActivity {
     }
 
     private void getResponse() {
-        dialog = new ProgressDialog(this);
+
+        dialog = new ProgressDialog(Data.this);
         dialog.setMessage("Loading....");
         dialog.show();
 
@@ -112,8 +129,7 @@ public class Data extends AppCompatActivity {
                 Log.d("TAG", "onResponse: " + string);
 
                 makeMenu(string);
-                /*String sheet = makeMenu(string);
-                parseJsonData(string,sheet);*/
+                parseJsonData(string,sheet);
 
                 json = string;
             }
@@ -143,9 +159,11 @@ public class Data extends AppCompatActivity {
     private String makeMenu(String json){
         ArrayList<String> sheets = new ArrayList<>();
         String database ="";
-
+        Log.d("TAG", "makeMenu: make menuuu--- ");
 
         try {
+            Log.d("TAG", "makeMenu: make menuuu--- dentro ");
+
             JSONObject object = new JSONObject(json);
             JSONObject sheets_object = new JSONObject(json);
 
@@ -160,7 +178,6 @@ public class Data extends AppCompatActivity {
 
             }
 
-            sheets_object = object.getJSONObject(database);
             sheets_object = object.getJSONObject(database);
 
             //To get all sheets
@@ -185,14 +202,18 @@ public class Data extends AppCompatActivity {
 
             e.printStackTrace();
         }
-
+        Log.d("TAG", "makeMenu: make menuuu--- dismiss ");
         dialog.dismiss();
+
+
+
 
         return sheets.get(0);
     }
 
     private void parseJsonData(String jsonString,String sheet) {
 
+        Log.d("TAG", "parseJsonData: paaaaarse ");
 
         ArrayList<String> sheets = new ArrayList<>();
         String database ="";
@@ -284,4 +305,6 @@ public class Data extends AppCompatActivity {
     void addMenuTitle(int menu, String title){
         navigationView.getMenu().getItem(menu).getSubMenu().add(title);
     }
+
+
 }

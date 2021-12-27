@@ -68,6 +68,14 @@ public class Item_adapter extends BaseAdapter {
 
 
         LinearLayout linearLayout =  convertView.findViewById(R.id.list_item);
+
+        LinearLayout.LayoutParams params_general = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+
+
+        linearLayout.setLayoutParams(params_general);
+
         linearLayout.setOrientation(linearLayout.HORIZONTAL);
 
         LinearLayout linearLayout_internal_1 = new LinearLayout(context);
@@ -172,7 +180,7 @@ public class Item_adapter extends BaseAdapter {
 
         LinearLayout.LayoutParams params_img = new LinearLayout.LayoutParams(50,50);
 
-        params_img.setMargins(0,0,0,20);
+        params_img.setMargins(0,0,20,20);
 
         imageView.setLayoutParams(params_img);
 

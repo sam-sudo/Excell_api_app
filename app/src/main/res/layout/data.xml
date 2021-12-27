@@ -12,64 +12,71 @@
     tools:ignore="HardcodedText">
 
 
-    <LinearLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/border"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <androidx.appcompat.widget.SearchView
-                android:layout_weight="1"
+            <LinearLayout
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/border"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            </androidx.appcompat.widget.SearchView>
+                <androidx.appcompat.widget.SearchView
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            <TextView
-                android:text="items: 0"
-                android:layout_weight="1.9"
-                android:id="@+id/n_items"
-                android:textSize="20dp"
+                </androidx.appcompat.widget.SearchView>
+
+                <TextView
+                    android:text="items: 0"
+                    android:layout_weight="1.9"
+                    android:id="@+id/n_items"
+                    android:textSize="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="10dp">
+
+                </TextView>
+
+            </LinearLayout>
+
+
+
+            <ListView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                android:layout_marginLeft="0dp"
-                android:layout_marginRight="10dp">
+                android:divider="@android:color/transparent"
+                android:dividerHeight="10dp"
+                android:layout_margin="10dp"
+                android:id="@+id/dataList"/>
+
+            <TextView
+                android:id="@+id/empty"
+                android:text="Chose one sheet on menu"
+                android:gravity="center"
+                android:textSize="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
             </TextView>
 
         </LinearLayout>
 
-
-
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="10dp"
-            android:layout_margin="10dp"
-            android:id="@+id/dataList"/>
-
-        <TextView
-            android:id="@+id/empty"
-            android:text="Chose one sheet on menu"
-            android:gravity="center"
-            android:textSize="30dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </TextView>
-
-    </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!--this the navigation view which draws
         and shows the navigation drawer-->
