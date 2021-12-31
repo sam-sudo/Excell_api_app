@@ -29,11 +29,11 @@ import java.util.Map;
 public class Item_adapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<Object> list;
+    private ArrayList<LinkedHashMap<String,String>> list;
     final int MAX_INFO_DETAIL = 3;
 
 
-    public Item_adapter(Context context, ArrayList<Object> list) {
+    public Item_adapter(Context context, ArrayList<LinkedHashMap<String,String>> list) {
         this.context = context;
         this.list = list;
     }
@@ -58,6 +58,7 @@ public class Item_adapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         convertView = LayoutInflater.from(context).inflate(R.layout.info_item, null);
+
 
 
         LinkedHashMap<String,String> item = (LinkedHashMap ) getItem(position);
@@ -105,7 +106,7 @@ public class Item_adapter extends BaseAdapter {
             if(count >= MAX_INFO_DETAIL){
                 break;
             }
-            
+
             TextView textView_temp2 = new TextView(context);
             ImageView img_temp = new ImageView(context);
             LinearLayout linearLayout_internal_1_1 = new LinearLayout(context);
@@ -160,6 +161,7 @@ public class Item_adapter extends BaseAdapter {
 
 
             textView_temp2.setText(item.get(key));
+            textView_temp2.setLines(1);
             textView_temp2.setPadding(20,0,0,0);
             textView_temp2.setTextSize(15);
             textView_temp2.setGravity(Gravity.CENTER | Gravity.LEFT);
@@ -192,8 +194,6 @@ public class Item_adapter extends BaseAdapter {
         params_img.setMargins(0,0,20,20);
 
         imageView.setLayoutParams(params_img);
-
-
 
 
         imageView.setImageResource(R.drawable.pencil);

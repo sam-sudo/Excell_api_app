@@ -1,24 +1,19 @@
 package com.example.excell_api_app;
 
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -33,32 +28,29 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.excell_api_app.Adapters.Item_adapter;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Data extends AppCompatActivity {
 
     private Item_adapter item_adapter;
-    private static final int MAX_INFO_DETAIL = 3;
     ListView dataList;
     TextView emptyDataList;
     TextView n_items;
     String sheet;
+    String word_to_search;
+    ArrayList<LinkedHashMap<String,String>> data_list = new ArrayList();
 
     String url = "https://script.google.com/macros/s/AKfycbxC793kDeQEODSimADvdpXvx4Rpvd8AyQzxSsn8AGXhAjdsVCCEFgDWsyPeWCNRHHU/exec";
-    String url2 = "https://script.google.com/macros/s/AKfycbzlCSBaW09IhIMSSvWkMamVXGguCODYgGu0Y0TY3G6JTfRHbv1aOnBjcZR6CI3KEY9C/exec";
+    String url2 = "https://script.google.com/macros/s/AKfycbzy0Oq5guaNAlQdRWYZvHlc3EnoVoCfpLn13d5Y1iS9yJs8cke0U-ZtBUtEmDnSkjEw/exec";
 
     ProgressDialog dialog;
     DrawerLayout drawerLayout;
@@ -82,6 +74,19 @@ public class Data extends AppCompatActivity {
         searchView = findViewById(R.id.search);
 
 
+        dataList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(Data.this, Item_detail.class);
+                Gson gson = new Gson();
+                String list_parsed = gson.toJson(data_list.get(position));
+                intent.putExtra("dataList",  list_parsed);
+                startActivity(intent);
+            }
+        });
+
+        //----------Create refresh----------
+
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -89,13 +94,17 @@ public class Data extends AppCompatActivity {
 
                 if(sheet != null){
                     getResponse();
+                    searchView.setQuery("",false);
+                    searchView.clearFocus();
+
                 }
 
             }
         });
 
+        //----------Create search----------
+
         searchView.setIconifiedByDefault(false);
-        //searchView.getQuery();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -105,6 +114,7 @@ public class Data extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                Log.d("TAG", "parseJsonData: word --- " + newText.toLowerCase());
                 parseJsonData(json,sheet,newText.toLowerCase());
                 return false;
             }
@@ -127,8 +137,12 @@ public class Data extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                sheet = item.getTitle().toString();
-                parseJsonData(json,item.getTitle().toString());
+                try {
+                    sheet = item.getTitle().toString();
+                    parseJsonData(json,item.getTitle().toString(),null);
+                }catch (Exception e){
+
+                }
 
                 drawerLayout.closeDrawer(GravityCompat.START);
 
@@ -140,7 +154,20 @@ public class Data extends AppCompatActivity {
 
 
 
+
     }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //------------------ My methods ----------------------------
 
     private void getResponse() {
 
@@ -155,7 +182,7 @@ public class Data extends AppCompatActivity {
                 Log.d("TAG", "onResponse: " + string);
 
                 makeMenu(string);
-                parseJsonData(string,sheet);
+                parseJsonData(string,sheet,null);
 
                 json = string;
             }
@@ -163,6 +190,7 @@ public class Data extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 Toast.makeText(getApplicationContext(), "Some error occurred!!", Toast.LENGTH_SHORT).show();
+                finish();
                 dialog.dismiss();
 
             }
@@ -171,16 +199,6 @@ public class Data extends AppCompatActivity {
         RequestQueue rQueue = Volley.newRequestQueue(Data.this);
         rQueue.add(request);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    //------------------ My methods ----------------------------
 
     private String makeMenu(String json){
         ArrayList<String> sheets = new ArrayList<>();
@@ -237,9 +255,12 @@ public class Data extends AppCompatActivity {
         return sheets.get(0);
     }
 
-    private void parseJsonData(String jsonString,String sheet, String... word) {
+    private void parseJsonData(String jsonString,String sheet, @Nullable String word) {
+
 
         Log.d("TAG", "parseJsonData: paaaaarse ");
+        Log.d("TAG", "parseJsonData: word1 " + word);
+
 
         ArrayList<String> sheets = new ArrayList<>();
         String database ="";
@@ -248,6 +269,7 @@ public class Data extends AppCompatActivity {
         try {
             JSONObject object = new JSONObject(jsonString);
             JSONObject sheets_object = new JSONObject(jsonString);
+
 
 
             //To get all database
@@ -271,13 +293,10 @@ public class Data extends AppCompatActivity {
 
             }
 
-            //USE THIS IN FRAGMENT TO SHEETS CHANGES
             JSONArray objectArray = sheets_object.getJSONArray(sheet);
+            data_list = new ArrayList();
 
             JSONObject data ;
-            ArrayList<Object> data_list = new ArrayList();
-
-            n_items.setText("Datos: " + objectArray.length());
 
 
             for(int i = 0; i < objectArray.length(); ++i) {
@@ -295,10 +314,10 @@ public class Data extends AppCompatActivity {
                 }
 
 
-                if(searchView.getQuery() == null || searchView.getQuery().length() <= 0){
+                if(word == null || word.length() <= 0 ){
                     data_list.add(item_temp);
                 }else {
-                    boolean isInlist = seachItem(item_temp, String.valueOf(searchView.getQuery()));
+                    boolean isInlist = searchItem(item_temp, word);
 
                     if(isInlist){
                         data_list.add(item_temp);
@@ -311,8 +330,11 @@ public class Data extends AppCompatActivity {
                 emptyDataList.setVisibility(View.INVISIBLE);
             }
 
+            n_items.setText("Datos: " + data_list.size());
+
             item_adapter = new Item_adapter(this, data_list);
             dataList.setAdapter(item_adapter);
+            item_adapter.notifyDataSetChanged();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -322,12 +344,13 @@ public class Data extends AppCompatActivity {
 
     }
 
-    Boolean seachItem(LinkedHashMap<String, String> item, String word){
+    private Boolean searchItem(LinkedHashMap<String, String> item, String word){
         Log.d("TAG", "seachItem:  mmmmmm " + item);
 
 
         for (String key : item.values()){
             if(key.toLowerCase().startsWith(word.toLowerCase())){
+                Log.d("TAG", "seachItem:  is true" );
                 return true;
             }
         }

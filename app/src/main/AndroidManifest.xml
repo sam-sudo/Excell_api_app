@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Excell_Api_App">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:screenOrientation="portrait">
             <intent-filter>
 
                 <action android:name="android.intent.action.MAIN" />
@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Data"></activity>
+        <activity android:name=".Item_detail"></activity>
     </application>
 
 </manifest>
