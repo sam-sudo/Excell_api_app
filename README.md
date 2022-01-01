@@ -4,6 +4,23 @@ App with Android where you can consult to a web excel.
 * Vamos a conectar una app android con unos datos que se encuentran en una hoja de cálculo de google.
 * Para ello necesitamos la extensión de la hoja de cálculo llamada AppsScript la cual recogerá los datos de esta y los transformará en un formato Json y mediante la url que genere podremos obtener los datos en nuestra app.
 
+## Android App
+
+* Una vez conectado todo y con acceso a la url recogeremos esos datos desde la aplicación y los convertiremos en un objeto para mayor comodidad.
+* En la app solo podemos visualizar el contenido del excel en tiempo real todo lo que se modifique mediante un refresh se actualiza en la app.
+* Esta app es escalable, no solo funciona presiamente con estos datos ni con estas hojas si no que teniendoe sta app solo tenemos que activar en otra empresa su excel en google y app script y los datos de esa empresa funcionarian iguamente en la app.
+
+<img src="readme/app_01.PNG" alt="Script setvice service"  >
+
+### Mejoras 
+
+- [x] Actualización de datos en iempo real
+- [x] Escalable para cualquer excell
+- [ ] Mejor estilo
+- [ ] CRUD
+- [ ] Escalabilidad de la url de acceso a App Script
+
+
 
 ## AppScript
 * Esto es una extensión dentro de googleSheets que debemos activar y enlazar con la hoja de calculo.
@@ -30,27 +47,31 @@ function doGet() {
   sheets.forEach(sheet => {
     //console.log(sheet.getName());
     var hoja = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet.getName()).getDataRange().getValues();
-    result[sheet.getName()] = makeObject(hoja);
+    var rows = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet.getName()).getLastColumn();
+    
+    result[sheet.getName()] = makeObject(hoja, rows);
   });
 
   final_result[database] = result;
   
-  console.log(final_result);
+  //console.log(final_result);
   return ContentService.createTextOutput(JSON.stringify(final_result)).setMimeType(ContentService.MimeType.JSON)
   
 }
 
-function makeObject(multiArr) {
+function makeObject(multiArr, num_rows) {
   var obj = [];
 
   for (var row = 1; row < multiArr.length; row++) {
       var item ={};
       
-      for(var column = 0; column < 26; column++){
+      for(var column = 0; column < num_rows; column++){
         item[multiArr[0][column]] = multiArr[row][column]
       }
       obj.push(item);
     }
+
+    //console.log(item)
 
   return obj;
 }
@@ -61,6 +82,3 @@ function makeObject(multiArr) {
 
 <img src="readme/service2.PNG" alt="Script setvice service" width="400px" >
 
-## Android App
-
-Una vez conctado todo y con acceso a la url recogeremos esos datos desde la aplicación y los convertiremos en un objeto para mayor comodidad
