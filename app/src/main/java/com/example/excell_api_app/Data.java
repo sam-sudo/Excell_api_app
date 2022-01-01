@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -302,7 +305,7 @@ public class Data extends AppCompatActivity {
             for(int i = 0; i < objectArray.length(); ++i) {
 
                 LinkedHashMap<String,String> item_temp = new LinkedHashMap <>();
-                int count = 0;
+
                 data = objectArray.getJSONObject(i);
 
                 //here get all datas and add into object
@@ -328,6 +331,12 @@ public class Data extends AppCompatActivity {
 
             if(data_list != null && data_list.size() > 0){
                 emptyDataList.setVisibility(View.INVISIBLE);
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+                params.setMargins(10,10,10,10);
+                refreshLayout.setLayoutParams(params);
+
             }
 
             n_items.setText("Datos: " + data_list.size());

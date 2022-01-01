@@ -76,7 +76,7 @@ public class Item_adapter extends BaseAdapter {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
 
-
+        params_general.setMargins(20,20,20,20);
         linearLayout.setLayoutParams(params_general);
 
         linearLayout.setOrientation(linearLayout.HORIZONTAL);
@@ -147,6 +147,7 @@ public class Item_adapter extends BaseAdapter {
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     1);
 
+
             textView_temp2.setLayoutParams(param_temp);
 
             //------Params to first nº1 imgView linearLayout-------
@@ -163,7 +164,7 @@ public class Item_adapter extends BaseAdapter {
             textView_temp2.setText(item.get(key));
             textView_temp2.setLines(1);
             textView_temp2.setPadding(20,0,0,0);
-            textView_temp2.setTextSize(15);
+            textView_temp2.setTextSize(10);
             textView_temp2.setGravity(Gravity.CENTER | Gravity.LEFT);
 
 
